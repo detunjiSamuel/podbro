@@ -170,11 +170,11 @@ def generate_audio_content(transcript_arr):
             #     voice=matched_voices[speaker],
             #     input=dialogue
             # )
-            #
+
             # response.stream_to_file(f"output{count}.wav")
             audio_result.append(f"output{count}.wav")
             count += 1
-            if count >2:
+            if count > 2:
                 break
 
         audio_final = None

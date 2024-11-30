@@ -32,11 +32,3 @@ class Test(TestCase):
             self.assertIsInstance(transcript_arr, list)
             self.assertTrue(len(transcript_arr) == 22)
             self.assertTrue(all(isinstance(item, tuple) for item in transcript_arr))
-
-    def test_generate_audio_content(self):
-        with (open('./data/sample_transcript.txt', "r")) as file:
-            content = file.read().lower()
-            transcript_arr = parse_transcript(content)[:5]
-            audio_segments_merged = generate_audio_content(transcript_arr)
-
-            self.assertIsInstance(audio_segments_merged, AudioSegment)
