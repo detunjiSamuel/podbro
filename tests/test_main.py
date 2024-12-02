@@ -1,7 +1,8 @@
 from unittest import TestCase
 
 from pydub import AudioSegment
-from main import extract_text_from_pdf, generate_podcast_transcript_base, generate_audio_content, parse_transcript
+from main import extract_text_from_pdf, generate_podcast_transcript_base, parse_transcript
+from speech.tts import generate_audio_content
 
 
 class Test(TestCase):

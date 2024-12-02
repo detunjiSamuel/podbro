@@ -4,18 +4,10 @@
 # Press Double ⇧ to search everywhere for classes, files, tool windows, actions, and settings.
 
 
-import scipy
 from openai import OpenAI
-from huggingface_hub import InferenceClient
-import torch
-import transformers
 import pymupdf
 import os
 import logging
-
-import io
-import soundfile as sf
-from pydub import AudioSegment
 
 SYSTEM_PROMPT = """
     You are the a world-class podcast writer, you have worked as a ghost writer for Joe Rogan, Lex Fridman, Ben Shapiro, Tim Ferris. 
@@ -140,57 +132,6 @@ def generate_podcast_transcript_base(content):
     )
 
     return chat_completion.choices[0].message.content
-
-
-def generate_audio_content(transcript_arr):
-    """
-    Generate audio content from the transcript Array
-    :return:
-    """
-    client = OpenAI()
-
-    idx = 0
-    open_ai_voices = (
-        "alloy", "echo", "fable", "onyx", "nova", "shimmer"
-    )
-    matched_voices = {}
-    audio_result = []
-    try:
-        count = 0
-        for speaker, dialogue in transcript_arr:
-
-            if speaker not in matched_voices:
-                if idx >= len(open_ai_voices):
-                    raise Exception("No more voices available")
-                matched_voices[speaker] = open_ai_voices[idx]
-                idx += 1
-
-            # response = client.audio.speech.create(
-            #     model="tts-1",
-            #     voice=matched_voices[speaker],
-            #     input=dialogue
-            # )
-
-            # response.stream_to_file(f"output{count}.wav")
-            audio_result.append(f"output{count}.wav")
-            count += 1
-            if count > 2:
-                break
-
-        audio_final = None
-        for audio in audio_result:
-            print( audio)
-            if audio_final is None:
-                audio_final = AudioSegment.from_file(audio)
-            else:
-                audio_final += AudioSegment.from_file(audio)
-        audio_final.export("final.wav", format="wav")
-
-        return audio_final
-
-    except Exception as e:
-        logging.error(e)
-        return
 
 
 def print_hi(name):
