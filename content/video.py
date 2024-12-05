@@ -9,7 +9,7 @@ https://github.com/ytdl-org/youtube-dl/blob/master/README.md#how-can-i-detect-wh
 """
 
 
-class Video(ContentBase):  # TODO : update the class ContentBase
+class Video(ContentBase):
 
     def is_valid_source(self):
         pass
