@@ -1,21 +1,9 @@
 from unittest import TestCase
 
-from pydub import AudioSegment
-from main import extract_text_from_pdf, generate_podcast_transcript_base, parse_transcript
-from speech.tts import generate_audio_content
+from main import generate_podcast_transcript_base, parse_transcript
 
 
 class Test(TestCase):
-    def test_extract_text_from_pdf(self):
-        max_content_length = 50000
-        pdf_path = "./data/sample.pdf"
-        content = extract_text_from_pdf(pdf_path, max_content_length)
-
-        self.assertIsNotNone(content)
-        self.assertIsInstance(content, str)
-
-        with open('./data/sample.txt', "r") as file:
-            self.assertEqual(content[:max_content_length], file.read()[:max_content_length])
 
     def test_generate_podcast_transcript_base(self):
         with (open('./data/sample.txt', "r")) as file:

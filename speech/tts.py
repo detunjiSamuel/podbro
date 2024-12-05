@@ -140,6 +140,7 @@ class OpenAISpeech:
 
         self.audio_segments = []
 
+
     def generate_audio_content(self, transcript_arr):
         """
         Generate audio content from the transcript Array

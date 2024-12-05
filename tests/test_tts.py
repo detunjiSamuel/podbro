@@ -11,6 +11,7 @@ import os
 import datetime
 
 
+# Do not run this class directly
 class TestSpeechBase(TestCase):
     def setUp(self):
         with (open('./data/sample_transcript.txt', "r")) as file:
@@ -47,7 +48,7 @@ class TestEdgeSpeech(TestSpeechBase):
         self.generate_audio_content = EdgeSpeech().generate_audio_content
 
 
-class Test(TestCase):
+class TestTTSGeneralMethods(TestCase):
 
     def setUp(self):
         self.test_dir = "./data_test"
