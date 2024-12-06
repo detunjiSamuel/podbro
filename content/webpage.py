@@ -11,9 +11,9 @@ from urllib.parse import urlparse
 import logging
 
 
-def is_valid_url(self):
+def is_valid_url(url):
     try:
-        result = urlparse(self.url)
+        result = urlparse(url)
         return all([result.scheme, result.netloc])
     except ValueError:
         return False
@@ -29,8 +29,12 @@ class WebPage(ContentBase):
         article = Article(url=self.source)
         try:
             article.download()
-            article.download()
-            return f"Author: {article.authors} \n\n Title {article.title} \n\n {article.text}"
+            article.parse()
+
+            if not article.is_valid_body():
+                # without this , pages like 'google.com' will pass
+                raise newspaper.article.ArticleException("Invalid article body")
+            return f"Author: {article.authors} \n\n Title: {article.title} \n\n {article.text}"
         except newspaper.article.ArticleException as e:
             logging.error(e)
             raise Exception(f"Error not an article passed into news article extractor : {self.source}")
@@ -52,7 +56,7 @@ class WebPage(ContentBase):
             if response.status_code != 200:
                 raise Exception(f"Error while extracting content from the webpage : {self.source}")
             soup = BeautifulSoup(response.text, 'html.parser')
-            return soup.get_text(separator="\n")
+            return soup.get_text()
         except Exception as e:
             logging.error(e)
             raise Exception(f"Error while extracting content from the webpage : {self.source}")

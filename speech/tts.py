@@ -140,7 +140,6 @@ class OpenAISpeech:
 
         self.audio_segments = []
 
-
     def generate_audio_content(self, transcript_arr):
         """
         Generate audio content from the transcript Array
@@ -167,4 +166,3 @@ class OpenAISpeech:
         audio_final = merge_audio_files(self.audio_segments, audio_file_path)
         clean_up_segments_files(self.audio_segments)
         return audio_final, audio_file_path  # audiosegment , file_path
-
