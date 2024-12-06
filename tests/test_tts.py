@@ -1,6 +1,8 @@
 from unittest import TestCase
 
-from speech.tts import EdgeSpeech, merge_audio_files, OpenAISpeech
+from speech.tts import merge_audio_files
+from speech.openai import OpenAISpeech
+from speech.edge import EdgeSpeech
 
 from main import parse_transcript
 
