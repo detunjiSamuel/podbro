@@ -25,8 +25,8 @@ class TestYouTube(TestCase):
 
     def test_extract_content_from_source(self):
         source = 'https://www.youtube.com/watch?v=ReiYJhgwrz4'
-        yt = YouTube()
-        transcript = yt.extract_content_from_source(source)
+        yt = YouTube(source)
+        transcript = yt.extract_content_from_source()
 
         with open(self.yt_transcript_path, "r") as file:
             expected_transcript = file.read()
