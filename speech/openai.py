@@ -2,15 +2,22 @@ import datetime
 
 from openai import OpenAI
 
-from speech.tts import merge_audio_files, clean_up_segments_files
+from speech.base import merge_audio_files, clean_up_segments_files
+
+import os
 
 
 class OpenAISpeech:
+
     voices = (
         "alloy", "echo", "fable", "onyx", "nova", "shimmer"
     )
 
     def __init__(self):
+
+        if not os.getenv("OPENAI_API_KEY"):
+            raise Exception("OpenAI API Key not found")
+
         self.client = OpenAI()
 
         self.audio_segments = []

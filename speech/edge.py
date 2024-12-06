@@ -4,7 +4,7 @@ import datetime
 import edge_tts
 from edge_tts import VoicesManager
 
-from speech.tts import run_all_pending_tasks, merge_audio_files, clean_up_segments_files
+from speech.base import run_all_pending_tasks, merge_audio_files, clean_up_segments_files
 
 
 class EdgeSpeech:

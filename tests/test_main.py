@@ -1,6 +1,6 @@
 from unittest import TestCase
 
-from main import generate_podcast_transcript_base, parse_transcript
+from generator.base import parse_transcript, generate_podcast_transcript_base
 
 
 class Test(TestCase):
