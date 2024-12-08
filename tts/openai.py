@@ -2,7 +2,7 @@ import datetime
 
 from openai import OpenAI
 
-from speech.base import merge_audio_files, clean_up_segments_files
+from tts.base import merge_audio_files, clean_up_segments_files
 
 import os
 
