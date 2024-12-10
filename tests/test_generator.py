@@ -1,6 +1,6 @@
 from unittest import TestCase
 
-from generator.base import parse_transcript, generate_podcast_transcript_base
+from generator.base import parse_transcript, generate_podcast_transcript
 
 
 class Test(TestCase):
@@ -8,7 +8,7 @@ class Test(TestCase):
     def test_generate_podcast_transcript_base(self):
         with (open('./data/sample.txt', "r")) as file:
             content = file.read()
-            transcript = generate_podcast_transcript_base(content)
+            transcript = generate_podcast_transcript(content)
             self.assertIsNotNone(transcript)
             self.assertIsInstance(transcript, str)
             transcript_lower = transcript.lower()

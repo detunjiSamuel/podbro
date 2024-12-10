@@ -1,6 +1,7 @@
 from unittest import TestCase
 
-from main import speech_to_text, break_audio_file_into_usable_chunks, download_audio_file
+from main import speech_to_text
+from content_parsers.media import break_audio_file_into_usable_chunks, download_audio_file , download_video_file
 
 import logging
 
@@ -14,7 +15,7 @@ class Test(TestCase):
         self.fail()
 
     def test_break_audio_file_into_usable_chunks(self):
-        path = "/Users/bob/Documents/test/podbro/tests/We Rented BOYFRIENDS In Japan! [VzJG4IpYDvs].wav"
+        path = "/Users/bob/Documents/test/podbro/tests/We Rented BOYFRIENDS In Japan! [VzJG4IpYDvs].mp3"
         result = break_audio_file_into_usable_chunks(path)
 
         print(result)

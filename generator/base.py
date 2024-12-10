@@ -28,7 +28,7 @@ def parse_transcript(content):
     return transcript_arr
 
 
-def generate_podcast_transcript_base(content):
+def generate_podcast_transcript(content):
     """
     Generates a podcast bland transcript version from the text extracted
 
@@ -37,8 +37,8 @@ def generate_podcast_transcript_base(content):
     """
 
     messages = [
-        {"role": "system", "content": GEN_POD_SYSTEM_PROMPT},
-        {"role": "user", "content": content},
+        {"role": "system", "content_parsers": GEN_POD_SYSTEM_PROMPT},
+        {"role": "user", "content_parsers": content},
     ]
 
     client = OpenAI(

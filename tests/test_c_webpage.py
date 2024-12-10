@@ -1,6 +1,6 @@
 from unittest import TestCase
 
-from content.webpage import WebPage
+from content_parsers.webpage import WebPage
 
 from parameterized import parameterized
 

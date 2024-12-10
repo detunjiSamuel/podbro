@@ -1,7 +1,7 @@
 from unittest import TestCase
 from parameterized import parameterized
 
-from content.youtube import get_yt_video_id, YouTube
+from content_parsers.youtube import get_yt_video_id, YouTube
 
 import os
 

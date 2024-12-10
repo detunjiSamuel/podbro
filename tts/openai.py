@@ -24,7 +24,7 @@ class OpenAISpeech:
 
     def generate_audio_content(self, transcript_arr):
         """
-        Generate audio content from the transcript Array
+        Generate audio content_parsers from the transcript Array
         :param transcript_arr:
         :return: AudioSegment , file_path
         """

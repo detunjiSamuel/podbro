@@ -1,5 +1,5 @@
 from unittest import TestCase
-from content.pdf import Pdf
+from content_parsers.pdf import Pdf
 import os
 
 
