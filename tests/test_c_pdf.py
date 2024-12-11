@@ -19,3 +19,11 @@ class TestPdf(TestCase):
 
         with open(self.expected_path, "r") as file:
             self.assertEqual(content[:self.max_content_length], file.read()[:self.max_content_length])
+
+    def test_pdf_source_validation(self):
+        does_not_exist = os.path.join(os.path.dirname(__file__), 'data', 'fake.pdf')
+        not_a_pdf = os.path.join(os.path.dirname(__file__), 'data', 'sample.txt')
+
+        self.assertFalse(Pdf.validate_source(does_not_exist))
+        self.assertFalse(Pdf.validate_source(not_a_pdf))
+
