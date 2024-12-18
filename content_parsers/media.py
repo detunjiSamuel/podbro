@@ -9,7 +9,7 @@ from content_parsers.base import ContentBase
 from content_parsers.webpage import is_valid_url
 from content_parsers.pdf import file_exists
 
-import youtube_dl
+import subprocess
 
 
 def break_audio_file_into_usable_chunks(audio_path):
@@ -58,6 +58,11 @@ def transcribe_audio_file(audio_path):
         print(transcription.text)
         result.append(transcription.text)
 
+    if len(audio_to_process) > 1:
+        # might not be a great idea to delete the original file here
+        for i in audio_to_process:
+            os.remove(i)
+
     return " ".join(result)
 
 
@@ -96,6 +101,41 @@ def download_video_file(url):
         return file_path
 
 
+def video_to_audio(input_video: str, audio_format: str = "mp3"):
+    """
+    Converts a video file to an audio file using FFmpeg.
+
+    Parameters:
+        input_video (str): Path to the input video file.
+        audio_format (str): Desired audio format (e.g., 'mp3', 'aac', 'wav'). Default is 'mp3'.
+
+    Returns:
+       Absolute path to the output audio file.
+    """
+
+    directory = os.path.dirname(input_video)
+    file_name = os.path.splitext(os.path.basename(input_video))[0]
+    output_audio = f"{file_name}.{audio_format}"
+
+    try:
+        command = [
+            "ffmpeg",
+            "-i", input_video,  # Input video file
+            "-vn",  # Disable video recording
+            "-acodec", "libmp3lame" if audio_format == "mp3" else "aac",  # Audio codec based on format
+            "-y",  # Overwrite output file without asking
+            output_audio  # Output audio file
+        ]
+
+        subprocess.run(command, check=True)
+        logging.debug(f"Audio successfully extracted to {output_audio}")
+        return os.path.join(directory,  output_audio)
+    except subprocess.CalledProcessError as e:
+        logging.error(f"Error: Failed to convert video to audio. {e}")
+    except FileNotFoundError:
+        logging.error("Error: FFmpeg not found. Make sure it is installed and added to PATH.")
+
+
 def can_download_from_here(url):
     try:
         with youtube_dl.YoutubeDL({}) as ydl:
@@ -113,6 +153,8 @@ class Media(ContentBase):
     def __init__(self, source):
         super().__init__(source)
         self.source_type = None
+
+        self.set_source_type()
 
     @staticmethod
     def is_supported_file_format(file_path):
@@ -143,22 +185,21 @@ class Media(ContentBase):
                 self.source_type = Media.is_supported_file_format(self.source)
                 return self.source_type
 
-    def download_video_from_url(self):
-        # download the video using ytdl
-        # return temp file path
-
-        # might need to use ffmpeg to convert the video to a format that can be used by wispher
-
-        # TODO : check if ydtcl can just auto download the audi
-        pass
-
-    def extract_audio_from_video(self):
-        # extract audio from the video
-        # return the audio file path
-        pass
-
     def extract_content_from_source(self):
-        # download the video with ytdl
-        # extract the text from the video using wispher
-        # return the text
-        pass
+        """
+
+        Extract transcript from the audio/Media
+        Accepts Both url and file path
+        :return:
+        """
+        if self.source_type == "URL":
+            audio_file_path = download_file(self.source)
+        elif self.source_type == "VIDEO":
+            audio_file_path = video_to_audio(self.source)
+        else:
+            audio_file_path = self.source
+        transcript = transcribe_audio_file(audio_file_path)
+
+        if self.source_type in ["URL", "VIDEO"]:
+            os.remove(audio_file_path)
+        return transcript
