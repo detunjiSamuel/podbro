@@ -4,8 +4,9 @@ import datetime
 import edge_tts
 from edge_tts import VoicesManager
 
-from tts.base import run_all_pending_tasks, merge_audio_files, clean_up_segments_files
+from podbro.tts.base import run_all_pending_tasks, merge_audio_files, clean_up_segments_files
 
+import uuid
 
 class EdgeSpeech:
     def __init__(self):
@@ -56,7 +57,7 @@ class EdgeSpeech:
                 communicate = edge_tts.Communicate(text, voice)
                 await communicate.save(output_file_name)
 
-            file_name = f'edge_output{datetime.datetime.now().strftime("%Y%m%d_%H%M%S")}.wav'
+            file_name = f'edge_output{uuid.uuid4()}.wav'
             pending_tasks.append(
                 _generate(dialogue,
                           matched_voices[speaker],
@@ -67,7 +68,7 @@ class EdgeSpeech:
 
         asyncio.run(run_all_pending_tasks(pending_tasks))
 
-        audio_file_path = f"final_edge{datetime.datetime.now().strftime('%Y%m%d_%H%M%S')}.wav"
+        audio_file_path = f"final_edge{uuid.uuid4()}.wav"
 
         audio_final = merge_audio_files(self.audio_segments, audio_file_path)
 

@@ -2,9 +2,11 @@ import datetime
 
 from openai import OpenAI
 
-from tts.base import merge_audio_files, clean_up_segments_files
+from podbro.tts.base import merge_audio_files, clean_up_segments_files
 
 import os
+import uuid
+
 
 
 class OpenAISpeech:
@@ -36,7 +38,7 @@ class OpenAISpeech:
                     raise Exception("No more voices available")
                 matched_voices[speaker] = OpenAISpeech.voices[idx]
                 idx += 1
-            file_name = f'edge_output{datetime.datetime.now().strftime("%Y%m%d_%H%M%S")}.wav'
+            file_name = f'edge_output{uuid.uuid4()}.wav'
             response = self.client.audio.speech.create(
                 model="tts-1",
                 voice=matched_voices[speaker],
@@ -44,7 +46,7 @@ class OpenAISpeech:
             )
             response.stream_to_file(file_name)
             self.audio_segments.append(file_name)
-        audio_file_path = f"final_edge{datetime.datetime.now().strftime('%Y%m%d_%H%M%S')}.wav"
+        audio_file_path = f"final_edge{uuid.uuid4()}.wav"
         audio_final = merge_audio_files(self.audio_segments, audio_file_path)
         clean_up_segments_files(self.audio_segments)
         return audio_final, audio_file_path  # audiosegment , file_path
