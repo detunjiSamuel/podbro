@@ -1,10 +1,10 @@
 from unittest import TestCase
 
-from tts.base import merge_audio_files
-from tts.openai import OpenAISpeech
-from tts.edge import EdgeSpeech
+from podbro.tts.base import merge_audio_files
+from podbro.tts.openai import OpenAISpeech
+from podbro.tts.edge import EdgeSpeech
 
-from generator.base import parse_transcript
+from podbro.generator.base import parse_transcript
 
 from pydub import AudioSegment
 from pydub.generators import Sine

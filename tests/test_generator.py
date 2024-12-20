@@ -1,6 +1,6 @@
 from unittest import TestCase
 
-from generator.base import parse_transcript, generate_podcast_transcript
+from podbro.generator.base import parse_transcript, generate_podcast_transcript
 
 
 class Test(TestCase):

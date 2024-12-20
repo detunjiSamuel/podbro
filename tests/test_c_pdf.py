@@ -1,5 +1,5 @@
 from unittest import TestCase
-from content_parsers.pdf import Pdf
+from podbro.content_parsers.pdf import Pdf
 import os
 
 

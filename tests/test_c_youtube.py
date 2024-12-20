@@ -1,7 +1,7 @@
 from unittest import TestCase
 from parameterized import parameterized
 
-from content_parsers.youtube import get_yt_video_id, YouTube
+from podbro.content_parsers.youtube import YouTube
 
 import os
 
@@ -15,7 +15,7 @@ class Test(TestCase):
         ('https://www.youtube.com/v/Dlxu28sQfkE', 'Dlxu28sQfkE'),
     ])
     def test_get_yt_video_id(self, url, expected_video_id):
-        self.assertEqual(expected_video_id, get_yt_video_id(url))
+        self.assertEqual(expected_video_id, YouTube.get_yt_video_id(url))
 
 
 class TestYouTube(TestCase):

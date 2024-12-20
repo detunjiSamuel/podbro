@@ -1,6 +1,6 @@
 from unittest import TestCase
 
-from content_parsers.webpage import WebPage
+from podbro.content_parsers.webpage import WebPage
 
 from parameterized import parameterized
 

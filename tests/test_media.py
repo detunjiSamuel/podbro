@@ -1,6 +1,6 @@
 from unittest import TestCase
 
-from content_parsers.media import download_video_file, video_to_audio
+from podbro.content_parsers.media import download_video_file, video_to_audio
 
 import os
 
