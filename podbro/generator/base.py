@@ -1,6 +1,6 @@
 from openai import OpenAI
 
-from prompts.base import GEN_POD_SYSTEM_PROMPT
+from podbro.prompts.base import GEN_POD_SYSTEM_PROMPT
 
 
 def parse_transcript(content):
@@ -37,8 +37,8 @@ def generate_podcast_transcript(content):
     """
 
     messages = [
-        {"role": "system", "content_parsers": GEN_POD_SYSTEM_PROMPT},
-        {"role": "user", "content_parsers": content},
+        {"role": "system", "content": GEN_POD_SYSTEM_PROMPT},
+        {"role": "user", "content": content},
     ]
 
     client = OpenAI(
