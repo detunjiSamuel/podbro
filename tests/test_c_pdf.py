@@ -9,6 +9,7 @@ class TestPdf(TestCase):
         self.pdf_path = os.path.join(os.path.dirname(__file__), 'data', 'sample.pdf')
         self.expected_path = os.path.join(os.path.dirname(__file__), 'data', 'sample.txt')
 
+        self.invalid_pdf_path = os.path.join(os.path.dirname(__file__), 'data', 'invalid.pdf')
         self.pdf_content = Pdf(self.pdf_path)
 
     def test_extract_text_from_pdf(self):
@@ -27,3 +28,13 @@ class TestPdf(TestCase):
         self.assertFalse(Pdf.validate_source(does_not_exist))
         self.assertFalse(Pdf.validate_source(not_a_pdf))
 
+    def test_extract_text_with_max_char_length(self):
+        content = self.pdf_content.extract_content_from_source(100)
+
+        self.assertIsNotNone(content)
+        self.assertIsInstance(content, str)
+        self.assertLessEqual(len(content), 100)
+
+    def test_extract_text_from_invalid_pdf(self):
+        with self.assertRaises(Exception):
+            Pdf(self.invalid_pdf_path)
