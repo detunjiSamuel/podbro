@@ -25,4 +25,8 @@ class ContentBase(ABC):
 
     @abstractmethod
     def extract_content_from_source(self):
+        """
+        Extract content from the source passed in
+        :return:
+        """
         pass

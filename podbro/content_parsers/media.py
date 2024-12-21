@@ -5,17 +5,19 @@ import yt_dlp as youtube_dl
 from openai import OpenAI
 from pydub import AudioSegment
 
-from content_parsers.base import ContentBase
-from content_parsers.webpage import is_valid_url
-from content_parsers.pdf import file_exists
+from podbro.content_parsers.base import ContentBase
+from podbro.content_parsers.webpage import is_valid_url
+from podbro.content_parsers.pdf import file_exists
 
 import subprocess
 
 
-def break_audio_file_into_usable_chunks(audio_path):
+def break_audio_file_into_usable_chunks(audio_path: str):
     """
-    :param audio_path: Absolute path to the audio file
-    :return:
+    Breaks an audio file into 10-minute chunks.
+
+    :param audio_path: Absolute path to the audio file.
+    :return: List of paths to the audio chunks.
     """
     ten_minutes = 10 * 60 * 1000
     audio = AudioSegment.from_file(audio_path)
@@ -43,7 +45,13 @@ def break_audio_file_into_usable_chunks(audio_path):
     return audio_chunks
 
 
-def transcribe_audio_file(audio_path):
+def transcribe_audio_file(audio_path: str):
+    """
+    Transcribes an audio file using OpenAI's Whisper model.
+
+    :param audio_path: Absolute path to the audio file.
+    :return: Transcription text.
+    """
     result = []
     client = OpenAI()
 
@@ -67,6 +75,13 @@ def transcribe_audio_file(audio_path):
 
 
 def download_file(url, audio=True):
+    """
+    Downloads a file from a URL using yt-dlp.
+
+    :param url: URL of the file to download.
+    :param audio: Boolean indicating if the file is audio.
+    :return: Path to the downloaded file.
+    """
     ydl_opts = {}
     if audio:
         ydl_opts = {
@@ -90,7 +105,13 @@ def download_file(url, audio=True):
         return file_path
 
 
-def download_video_file(url):
+def download_video_file(url: str):
+    """
+    Downloads a video file from a URL using yt-dlp.
+
+    :param url: URL of the video to download.
+    :return: Path to the downloaded video file.
+    """
     with youtube_dl.YoutubeDL({}) as ydl:
         # default output template : %(title)s [%(id)s].%(ext)s.
         info = ydl.extract_info(
@@ -105,12 +126,9 @@ def video_to_audio(input_video: str, audio_format: str = "mp3"):
     """
     Converts a video file to an audio file using FFmpeg.
 
-    Parameters:
-        input_video (str): Path to the input video file.
-        audio_format (str): Desired audio format (e.g., 'mp3', 'aac', 'wav'). Default is 'mp3'.
-
-    Returns:
-       Absolute path to the output audio file.
+    :param input_video: Path to the input video file.
+    :param audio_format: Desired audio format (e.g., 'mp3', 'aac', 'wav'). Default is 'mp3'.
+    :return: Absolute path to the output audio file.
     """
 
     directory = os.path.dirname(input_video)
@@ -129,14 +147,20 @@ def video_to_audio(input_video: str, audio_format: str = "mp3"):
 
         subprocess.run(command, check=True)
         logging.debug(f"Audio successfully extracted to {output_audio}")
-        return os.path.join(directory,  output_audio)
+        return os.path.join(directory, output_audio)
     except subprocess.CalledProcessError as e:
         logging.error(f"Error: Failed to convert video to audio. {e}")
     except FileNotFoundError:
         logging.error("Error: FFmpeg not found. Make sure it is installed and added to PATH.")
 
 
-def can_download_from_here(url):
+def can_download_from_here(url:str):
+    """
+    Checks if a URL can be downloaded using yt-dlp.
+
+    :param url: URL to check.
+    :return: True if the URL can be downloaded, False otherwise.
+    """
     try:
         with youtube_dl.YoutubeDL({}) as ydl:
             info = ydl.extract_info(
@@ -149,15 +173,28 @@ def can_download_from_here(url):
 
 
 class Media(ContentBase):
-
+    """
+    Class to handle media content extraction from URLs or files.
+    """
     def __init__(self, source):
+        """
+        Initializes the Media object.
+
+        :param source: Source URL or file path.
+        """
         super().__init__(source)
         self.source_type = None
 
         self.set_source_type()
 
     @staticmethod
-    def is_supported_file_format(file_path):
+    def is_supported_file_format(file_path:str):
+        """
+        Checks if the file format is supported.
+
+        :param file_path: Path to the file.
+        :return: "AUDIO" if the file is an audio file, "VIDEO" if it is a video file, False otherwise.
+        """
         audio_extensions = {".mp3", ".wav", ".flac", ".aac", ".ogg", ".m4a", ".wma"}
         video_extensions = {".mp4", ".avi", ".mkv", ".mov", ".flv", ".wmv", ".webm", ".mpeg", ".3gp"}
 
@@ -171,12 +208,23 @@ class Media(ContentBase):
         return False
 
     @staticmethod
-    def validate_source(source):
+    def validate_source(source:str):
+        """
+        Validates the source URL or file path.
+
+        :param source: Source URL or file path.
+        :return: True if the source is valid, False otherwise.
+        """
         if is_valid_url(source) and can_download_from_here(source):
             return True
         return file_exists(source) and Media.is_supported_file_format(source)
 
     def set_source_type(self):
+        """
+         Sets the source type based on the source URL or file path.
+
+         :return: Source type ("URL", "AUDIO", or "VIDEO").
+         """
         if self.is_valid_source():
             if can_download_from_here(self.source):
                 self.source_type = "URL"
@@ -187,10 +235,9 @@ class Media(ContentBase):
 
     def extract_content_from_source(self):
         """
+        Extracts transcript from the audio/media source.
 
-        Extract transcript from the audio/Media
-        Accepts Both url and file path
-        :return:
+        :return: Transcription text.
         """
         if self.source_type == "URL":
             audio_file_path = download_file(self.source)
