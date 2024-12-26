@@ -1,4 +1,4 @@
-from unittest import TestCase
+from unittest import TestCase, mock
 
 from podbro.tts.base import merge_audio_files
 from podbro.tts.openai import OpenAISpeech
@@ -10,7 +10,7 @@ from pydub import AudioSegment
 from pydub.generators import Sine
 
 import os
-import datetime
+import uuid
 
 
 # Do not run this class directly
@@ -28,6 +28,12 @@ class TestSpeechBase(TestCase):
 
         self.files_generated.append(audio_file_path)
 
+    def test_audio_quality(self):
+        audio_segments_merged, audio_file_path = self.generate_audio_content(self.transcript_arr[:2])
+
+        self.assertEqual(audio_segments_merged.frame_rate, 24000)
+        self.assertEqual(audio_segments_merged.channels, 1)
+
     def generate_audio_content(self, transcript_arr):
         raise NotImplementedError("Subclasses must implement `generate_audio_content`.")
 
@@ -37,17 +43,30 @@ class TestSpeechBase(TestCase):
                 os.remove(audio)
 
 
+class TestEdgeSpeech(TestSpeechBase):
+    def setUp(self):
+        super().setUp()
+        self.generate_audio_content = EdgeSpeech().generate_audio_content
+
+    async def test_voice_fetch(self):
+        edge_speech = EdgeSpeech()
+        voices = await edge_speech.fetch_voices()
+        self.assertIsInstance(voices, list)
+        self.assertGreater(len(voices), 0)
+
+    @mock.patch('edge_tts.Communicate')
+    def test_error_handling(self, mock_communicate):
+        mock_communicate.side_effect = Exception("API Error")
+        edge_speech = EdgeSpeech()
+        with self.assertRaises(Exception):
+            edge_speech.generate_audio_content([("Speaker1", "Test")])
+
+
 class TestOpenAISpeech(TestSpeechBase):
 
     def setUp(self):
         super().setUp()
         self.generate_audio_content = OpenAISpeech().generate_audio_content
-
-
-class TestEdgeSpeech(TestSpeechBase):
-    def setUp(self):
-        super().setUp()
-        self.generate_audio_content = EdgeSpeech().generate_audio_content
 
 
 class TestTTSGeneralMethods(TestCase):
@@ -67,7 +86,7 @@ class TestTTSGeneralMethods(TestCase):
             # remember to close the file after exporting
             Sine(sine).to_audio_segment(duration=1000).export(audio, format="wav").close()
 
-        self.output_file = f"{self.test_dir}/{datetime.datetime.now().strftime('%Y%m%d_%H%M%S')}.wav"
+        self.output_file = f"{self.test_dir}/{uuid.uuid4()}.wav"
 
     def tearDown(self):
 

@@ -2,15 +2,13 @@ import datetime
 
 from openai import OpenAI
 
-from podbro.tts.base import merge_audio_files, clean_up_segments_files
+from podbro.tts.base import merge_audio_files, clean_up_segments_files, SpeechBase
 
 import os
 import uuid
 
 
-
-class OpenAISpeech:
-
+class OpenAISpeech(SpeechBase):
     voices = (
         "alloy", "echo", "fable", "onyx", "nova", "shimmer"
     )

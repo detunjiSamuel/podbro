@@ -2,6 +2,8 @@ import logging
 
 import os
 
+from abc import ABC, abstractmethod
+
 import asyncio
 
 from pydub import AudioSegment
@@ -36,10 +38,8 @@ def merge_audio_files(audio_files, output_file_path):
     :return: AudioSegment
     """
     try:
-
         if not audio_files:
             raise ValueError("No audio segments to merge")
-
         audio_final = None
         for audio in audio_files:
             if not os.path.exists(audio):
@@ -57,3 +57,7 @@ def merge_audio_files(audio_files, output_file_path):
         raise
 
 
+class SpeechBase(ABC):
+
+    def generate_audio_content(self, transcript_arr):
+        pass
