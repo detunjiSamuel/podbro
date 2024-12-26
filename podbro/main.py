@@ -53,35 +53,23 @@ def speech_to_text():
     return transcript
 
 
-def determine_content_parser_for_files(file_path):
-    # order is important
-    content_parsers = (
-        Pdf,
-        Media,
-    )
-
-    for content_parser in content_parsers:
-        if content_parser.validate_source(file_path):
-            return content_parser(file_path)
-
-    logging.error(f"No content parser found for the file:{file_path}")
-    raise Exception("No content parser found for the file")
+@lru_cache(maxsize=None)
+def get_content_parser_mapping():
+    return {
+        'url': [YouTube, Media, WebPage],
+        'file': [Pdf, Media]
+    }
 
 
-def determine_content_parser_for_urls(url):
-    # order is important
-    content_parsers = (
-        YouTube,
-        Media,
-        WebPage
-    )
+def get_content_parser(source: str, source_type: str):
+    parsers = get_content_parser_mapping()[source_type]
 
-    for parser in content_parsers:
-        if parser.validate_source(url):
-            return parser(url)
+    for parser in parsers:
+        if parser.validate_source(source):
+            return parser(source)
 
-    logging.error(f"No content parser found for the url:{url}")
-    raise Exception("No content parser found for the url")
+    logging.error(f"No content parser found :{source}")
+    raise Exception(f"No content parser found :{source}")
 
 
 def extract_content(urls, files, text):
@@ -99,11 +87,11 @@ def extract_content(urls, files, text):
         content.append(text)
 
     for url in urls:
-        content_parser = determine_content_parser_for_urls(url)
+        content_parser = get_content_parser(url, 'url')
         content.append(content_parser.extract_content_from_source())
 
-    for files in files:
-        content_parser = determine_content_parser_for_files(files)
+    for file in files:
+        content_parser = get_content_parser(file, 'file')
         content.append(content_parser.extract_content_from_source())
 
     transcript = " ".join(content)
