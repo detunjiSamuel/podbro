@@ -40,6 +40,8 @@ from podbro.tts.edge import EdgeSpeech
 from podbro.tts.openai import OpenAISpeech
 
 import logging
+from enum import Enum
+from functools import lru_cache
 
 
 def speech_to_text():
@@ -108,10 +110,16 @@ def extract_content(urls, files, text):
     return transcript
 
 
-def get_tts(model_name="edge"):
+class TTSModel(str, Enum):
+    EDGE = "edge"
+    OPENAI = "openai"
+
+
+@lru_cache(maxsize=None)
+def get_tts_model(model_name):
     tts_models = {
-        "edge": EdgeSpeech,
-        "openai": OpenAISpeech,
+        TTSModel.EDGE: EdgeSpeech,
+        TTSModel.OPENAI: OpenAISpeech,
     }
 
     tts_model = tts_models.get(model_name)
@@ -133,7 +141,7 @@ def create_podcast(
     transcript = generate_podcast_transcript(content)
     transcript_arr = parse_transcript(transcript)
 
-    speech = get_tts(tts_model)
+    speech = get_tts_model(tts_model)
     _, result_file_path = speech.generate_audio_content(transcript_arr)
 
     return result_file_path
