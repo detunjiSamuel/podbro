@@ -172,16 +172,16 @@ class PodcastGenerator:
             raise
 
 
-# CLI implementation
 app = typer.Typer()
+
 
 @app.command()
 def create(
-    urls: List[str] = typer.Option(None, "--url", "-u", help="URLs to process"),
-    text: str = typer.Option(None, "--text", "-t", help="Direct text input"),
-    files: List[str] = typer.Option(None, "--file", "-f", help="Files to process"),
-    content_model: str = typer.Option("openai", "--content-model", "-c", help="Content processing model"),
-    tts_model: TTSModel = typer.Option(TTSModel.EDGE, "--tts-model", "-m", help="Text-to-speech model")
+        urls: List[str] = typer.Option(None, "--url", "-u", help="URLs to process"),
+        text: str = typer.Option(None, "--text", "-t", help="Direct text input"),
+        files: List[str] = typer.Option(None, "--file", "-f", help="Files to process"),
+        content_model: str = typer.Option("openai", "--content-model", "-c", help="Content processing model"),
+        tts_model: TTSModel = typer.Option(TTSModel.EDGE, "--tts-model", "-m", help="Text-to-speech model")
 ) -> None:
     """Create a podcast from various content sources"""
     try:
@@ -198,84 +198,6 @@ def create(
         typer.echo(f"Error: {str(e)}", err=True)
         raise typer.Exit(1)
 
-
-
-
-@lru_cache(maxsize=None)
-def get_content_parser_mapping():
-    return {
-        'url': [YouTube, Media, WebPage],
-        'file': [Pdf, Media]
-    }
-
-
-def get_content_parser(source: str, source_type: str):
-    parsers = get_content_parser_mapping()[source_type]
-
-    for parser in parsers:
-        if parser.validate_source(source):
-            return parser(source)
-
-    logging.error(f"No content parser found :{source}")
-    raise Exception(f"No content parser found :{source}")
-
-
-def extract_content(urls, files, text):
-    # validate weblinks
-    for url in urls:
-        if not is_valid_url(url):
-            raise Exception(f"Invalid URL : {url}")
-
-    for file in files:
-        if not file_exists(file):
-            raise Exception(f"Invalid FILE PATH :{file}")
-
-    content = []
-    if text:
-        content.append(text)
-
-    for url in urls:
-        content_parser = get_content_parser(url, 'url')
-        content.append(content_parser.extract_content_from_source())
-
-    for file in files:
-        content_parser = get_content_parser(file, 'file')
-        content.append(content_parser.extract_content_from_source())
-
-    transcript = " ".join(content)
-    return transcript
-
-
-@lru_cache(maxsize=None)
-def get_tts_model(model_name):
-    tts_models = {
-        TTSModel.EDGE: EdgeSpeech,
-        TTSModel.OPENAI: OpenAISpeech,
-    }
-
-    tts_model = tts_models.get(model_name)
-    if not tts_model:
-        raise Exception(f"No TTS model found for the model name:{model_name}")
-
-    return tts_model()
-
-
-def create_podcast(
-        urls,  # webpages , video links  , regular youtube links ,  audio
-        text,  #
-        files,  # audio , video , pdfs
-        content_model,  # openai ,
-        tts_model=None,  # edge , openai
-):
-    content = extract_content(urls, files, text)
-
-    transcript = generate_podcast_transcript(content)
-    transcript_arr = parse_transcript(transcript)
-
-    speech = get_tts_model(tts_model)
-    _, result_file_path = speech.generate_audio_content(transcript_arr)
-
-    return result_file_path
 
 
 # Press the green button in the gutter to run the script.

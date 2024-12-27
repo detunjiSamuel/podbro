@@ -1,85 +1,90 @@
-import os.path
+import os
 from unittest import TestCase
 
-from podbro.main import speech_to_text, extract_content, create_podcast
-from podbro.content_parsers.media import break_audio_file_into_usable_chunks
+from podbro.main import PodcastGenerator, ContentParser, TTSModel
 
 import logging
 
 logging.basicConfig(level=logging.INFO)
 
 
-class Test(TestCase):
-    def test_speech_to_text(self):
-        # TODO: remove this , it's useless
-        result = speech_to_text()
-        print(result)
-        self.fail()
+class TestContentParser(TestCase):
 
-    def test_break_audio_file_into_usable_chunks(self):
-        # TODO: move this to media tests
-        path = "/Users/bob/Documents/test/podbro/tests/We Rented BOYFRIENDS In Japan! [VzJG4IpYDvs].mp3"
-        result = break_audio_file_into_usable_chunks(path)
+    def test_validate_sources_with_invalid_url(self):
+        invalid_url = "utube.com/watch?v=VzJG4IpYDvs"
 
-        print(result)
+        with self.assertRaises(ValueError) as context:
+            ContentParser.validate_sources([invalid_url], [])
 
-        self.fail()
+        self.assertTrue("Invalid URL" in str(context.exception))
 
-    def test_extract_content(self):
-        urls = [
-            "https://www.youtube.com/watch?v=db0WO6BO5xo"
-        ]
+    def test_validate_sources_with_invalid_file(self):
+        invalid_file = "/data/doesnotexist.mp3"
 
-        files = [
+        with self.assertRaises(ValueError) as context:
+            ContentParser.validate_sources([], [invalid_file])
 
-        ]
+        self.assertTrue("Invalid file path" in str(context.exception))
 
+    def test_get_parser_mapping_caching(self):
+        result1 = ContentParser.get_parser_mapping()
+        result2 = ContentParser.get_parser_mapping()
+        # should be same since i used caching
+        self.assertIs(result1, result2)
+
+
+class TestPodcastGenerator(TestCase):
+
+    def setUp(self):
+        self.generator = PodcastGenerator()
+        self.valid_youtube_url = "https://www.youtube.com/watch?v=2CujHq4fb04"
+
+    def test_extract_content_success(self):
+        urls = [self.valid_youtube_url]
+        files = []
         text = ""
 
-        result = extract_content(urls, files, text)
+        result = self.generator.extract_content(urls, files, text)
+        # print( result )
 
         self.assertIsNotNone(result)
         self.assertTrue(len(result) > 0)
 
-        with open("modo_energy.txt", "w") as file:
-            file.write(result)
-
-        # print(result)
-        #
-        # self.fail()  # fail it to draw attention to the test
-
     def test_extract_content_failure(self):
-        # It is enough to test the failure
-        # content parsers have their tests
-
         invalid_url = "utube.com/watch?v=VzJG4IpYDvs"
         invalid_file = "/data/doesnotexist.mp3"
 
         with self.assertRaises(Exception) as context:
-            extract_content([invalid_url], [], None)
+            self.generator.extract_content([invalid_url], [], None)
 
-        self.assertTrue("Invalid URL" in str(context.exception))
+        self.assertTrue("Invalid" in str(context.exception))
 
         with self.assertRaises(Exception) as context:
-            extract_content([], [invalid_file], None)
+            self.generator.extract_content([], [invalid_file], None)
 
-        self.assertTrue("Invalid FILE PATH" in str(context.exception))
+        self.assertTrue("Invalid" in str(context.exception))
 
-    def test_create_podcast(self):
-        urls = [
-            "https://www.youtube.com/watch?v=seO--HfKJKk"
-        ]
-        files = [
-
-        ]
-        text = ""
-        content_model = ""
-        result = create_podcast(
+    def test_create_podcast_success(self):
+        urls = [self.valid_youtube_url]
+        result = self.generator.create_podcast(
             urls=urls,
-            files=files,
-            text=text,
-            content_model=content_model
+            files=[],
+            text="",
+            content_model="openai",
+            tts_model=TTSModel.EDGE
         )
+        print(result)
         self.assertTrue(os.path.exists(result))
         if os.path.exists(result):
             os.remove(result)
+
+    def test_get_tts_model_caching(self):
+        model1 = self.generator.get_tts_model(TTSModel.EDGE)
+        model2 = self.generator.get_tts_model(TTSModel.EDGE)
+        # should be same since i used cahcing
+        self.assertIs(model1, model2)
+
+    def test_get_tts_model_invalid(self):
+        with self.assertRaises(ValueError) as context:
+            self.generator.get_tts_model("invalid_model")
+        self.assertTrue("Unsupported TTS model" in str(context.exception))
