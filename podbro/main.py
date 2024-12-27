@@ -57,8 +57,8 @@ class TTSModel(str, Enum):
 
 
 class ContentParser:
-    @classmethod
-    def validate_sources(cls, urls: List[str], files: List[str]) -> None:
+    @staticmethod
+    def validate_sources(urls: List[str], files: List[str]) -> None:
         for url in urls:
             if not is_valid_url(url):
                 raise ValueError(f"Invalid URL: {url}")

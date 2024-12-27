@@ -154,7 +154,7 @@ def video_to_audio(input_video: str, audio_format: str = "mp3"):
         logging.error("Error: FFmpeg not found. Make sure it is installed and added to PATH.")
 
 
-def can_download_from_here(url:str):
+def can_download_from_here(url: str):
     """
     Checks if a URL can be downloaded using yt-dlp.
 
@@ -176,6 +176,7 @@ class Media(ContentBase):
     """
     Class to handle media content extraction from URLs or files.
     """
+
     def __init__(self, source):
         """
         Initializes the Media object.
@@ -188,7 +189,7 @@ class Media(ContentBase):
         self.set_source_type()
 
     @staticmethod
-    def is_supported_file_format(file_path:str):
+    def is_supported_file_format(file_path: str):
         """
         Checks if the file format is supported.
 
@@ -207,8 +208,8 @@ class Media(ContentBase):
         logging.error(f"INVALID MEDIA FILE PASSED: {file_path}")
         return False
 
-    @staticmethod
-    def validate_source(source:str):
+    @classmethod
+    def validate_source(cls, source: str):
         """
         Validates the source URL or file path.
 
@@ -217,7 +218,7 @@ class Media(ContentBase):
         """
         if is_valid_url(source) and can_download_from_here(source):
             return True
-        return file_exists(source) and Media.is_supported_file_format(source)
+        return file_exists(source) and cls.is_supported_file_format(source)
 
     def set_source_type(self):
         """
