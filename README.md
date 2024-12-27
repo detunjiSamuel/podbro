@@ -19,7 +19,7 @@ PodBro is a Python-based tool that generates podcasts from various content sourc
 
 ```bash
 # Clone the repository
-git clone https://github.com/detunjisamuel/lo.git
+git clone https://github.com/detunjisamuel/podbro.git
 
 # Install dependencies
 pip install -r requirements.txt
