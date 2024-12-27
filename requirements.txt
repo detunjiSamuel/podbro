@@ -1,4 +1,3 @@
-accelerate==1.1.1
 aiohappyeyeballs==2.4.3
 aiohttp==3.11.8
 aiosignal==1.3.1
@@ -22,7 +21,6 @@ fsspec==2024.10.0
 h11==0.14.0
 httpcore==1.0.7
 httpx==0.27.2
-huggingface-hub==0.26.2
 idna==3.10
 iniconfig==2.0.0
 jieba3k==0.35.1
@@ -60,7 +58,6 @@ regex==2024.11.6
 requests==2.32.3
 requests-file==2.1.0
 rich==13.9.4
-safetensors==0.4.5
 scipy==1.14.1
 sgmllib3k==1.0.0
 shellingham==1.5.4
@@ -71,11 +68,7 @@ soupsieve==2.6
 sympy==1.13.3
 tinysegmenter==0.3
 tldextract==5.1.3
-tokenizers==0.20.3
-torch==2.2.2
-torchvision==0.17.2
 tqdm==4.67.0
-transformers==4.46.3
 typer==0.15.1
 typing_extensions==4.12.2
 urllib3==2.2.3
