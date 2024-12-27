@@ -25,7 +25,8 @@ Expected MVP:
 
 """
 
-from podbro.content_parsers.media import transcribe_audio_file, download_file
+from typing import List, Optional
+import typer
 
 from podbro.content_parsers.webpage import is_valid_url
 
@@ -43,14 +44,161 @@ import logging
 from enum import Enum
 from functools import lru_cache
 
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+)
+logger = logging.getLogger(__name__)
 
-def speech_to_text():
-    # big files should be handled
 
-    audio_file_path = download_file("https://www.youtube.com/watch?v=VzJG4IpYDvs")
-    transcript = transcribe_audio_file(audio_file_path)
+class TTSModel(str, Enum):
+    EDGE = "edge"
+    OPENAI = "openai"
 
-    return transcript
+
+class ContentParser:
+    @classmethod
+    def validate_sources(cls, urls: List[str], files: List[str]) -> None:
+        for url in urls:
+            if not is_valid_url(url):
+                raise ValueError(f"Invalid URL: {url}")
+
+        for file in files:
+            if not file_exists(file):
+                raise ValueError(f"Invalid file path: {file}")
+
+    @staticmethod
+    @lru_cache(maxsize=None)
+    def get_parser_mapping():
+        return {
+            # The order is important
+            'url': [YouTube, Media, WebPage],
+            'file': [Pdf, Media]
+        }
+
+    @classmethod
+    def get_appropriate_parser(cls, source: str, source_type: str):
+        parsers = cls.get_parser_mapping()[source_type]
+
+        for parser in parsers:
+            try:
+                if parser.validate_source(source):
+                    return parser(source)
+            except Exception as e:
+                logger.debug(f"Parser {parser.__name__} failed for {source}: {str(e)}")
+                continue
+
+        raise ValueError(f"No suitable content parser found for: {source}")
+
+
+class PodcastGenerator:
+
+    def __init__(self):
+        self._tts_models = {
+            TTSModel.EDGE: EdgeSpeech,
+            TTSModel.OPENAI: OpenAISpeech,
+        }
+
+    @lru_cache(maxsize=None)
+    def get_tts_model(self, model_name: TTSModel):
+        """Get TTS model instance with caching"""
+        tts_model_class = self._tts_models.get(model_name)
+        if not tts_model_class:
+            raise ValueError(f"Unsupported TTS model: {model_name}")
+        return tts_model_class()
+
+    def extract_content(self,
+                        urls: List[str],
+                        files: List[str],
+                        text: Optional[str]) -> str:
+        ContentParser.validate_sources(urls, files)
+
+        content = []
+        if text:
+            content.append(text)
+
+        # Process URLs
+        for url in urls:
+            parser = ContentParser.get_appropriate_parser(url, 'url')
+            content.append(parser.extract_content_from_source())
+
+        # Process files
+        for file in files:
+            parser = ContentParser.get_appropriate_parser(file, 'file')
+            content.append(parser.extract_content_from_source())
+
+        return " ".join(content)
+
+    def create_podcast(
+            self,
+            urls: List[str] = None,
+            text: Optional[str] = None,
+            files: List[str] = None,
+            content_model: str = "openai",
+            tts_model: TTSModel = TTSModel.EDGE,
+    ) -> str:
+        """
+        Create a podcast from various content sources
+
+        Args:
+            urls: List of URLs (web pages, videos, etc.)
+            text: Direct text input
+            files: List of file paths (audio, video, PDFs)
+            content_model: Model for content processing
+            tts_model: Text-to-speech model to use
+
+        Returns:
+            str: Path to the generated audio file
+        """
+        urls = urls or []
+        files = files or []
+
+        try:
+            # Extract and process content
+            content = self.extract_content(urls, files, text)
+
+            # Generate transcript
+            transcript = generate_podcast_transcript(content)
+            transcript_arr = parse_transcript(transcript)
+
+            # Generate audio
+            speech = self.get_tts_model(tts_model)
+            _, result_file_path = speech.generate_audio_content(transcript_arr)
+
+            return result_file_path
+
+        except Exception as e:
+            logger.error(f"Failed to create podcast: {str(e)}")
+            raise
+
+
+# CLI implementation
+app = typer.Typer()
+
+@app.command()
+def create(
+    urls: List[str] = typer.Option(None, "--url", "-u", help="URLs to process"),
+    text: str = typer.Option(None, "--text", "-t", help="Direct text input"),
+    files: List[str] = typer.Option(None, "--file", "-f", help="Files to process"),
+    content_model: str = typer.Option("openai", "--content-model", "-c", help="Content processing model"),
+    tts_model: TTSModel = typer.Option(TTSModel.EDGE, "--tts-model", "-m", help="Text-to-speech model")
+) -> None:
+    """Create a podcast from various content sources"""
+    try:
+        generator = PodcastGenerator()
+        result = generator.create_podcast(
+            urls=urls,
+            text=text,
+            files=files,
+            content_model=content_model,
+            tts_model=tts_model
+        )
+        typer.echo(f"Podcast created successfully: {result}")
+    except Exception as e:
+        typer.echo(f"Error: {str(e)}", err=True)
+        raise typer.Exit(1)
+
+
 
 
 @lru_cache(maxsize=None)
@@ -98,11 +246,6 @@ def extract_content(urls, files, text):
     return transcript
 
 
-class TTSModel(str, Enum):
-    EDGE = "edge"
-    OPENAI = "openai"
-
-
 @lru_cache(maxsize=None)
 def get_tts_model(model_name):
     tts_models = {
@@ -135,13 +278,8 @@ def create_podcast(
     return result_file_path
 
 
-def print_hi(name):
-    # Use a breakpoint in the code line below to debug your script.
-    print(f'Hi, {name}')  # Press ⌘F8 to toggle the breakpoint.
-
-
 # Press the green button in the gutter to run the script.
-if __name__ == '__main__':
-    print_hi('PyCharm')
+if __name__ == "__main__":
+    app()
 
 # See PyCharm help at https://www.jetbrains.com/help/pycharm/
