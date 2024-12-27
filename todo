@@ -1,0 +1,10 @@
+change the way files are accessed
+    using (open) causes error outside of my system
+      change it the way it is accessed in the other files
+
+
+skip tests in youtbe downloads
+    because youtube know it is a bot
+
+solution might include a precommit hook that runs locally
+    instead of on github actions
