@@ -1,0 +1,119 @@
+ 
+ 
+ 
+ 
+1
+ 
+Sam Adetunji - Internship feedback 
+Charlie 
+The major piece of work I asked Sam to work on with me was to understand how transmission charging 
+works (taking Cockenzie as a specific example) and prepare: 
+1. 
+A table showing the annual charges 
+2. 
+A comparison of the annual charges if the project has a single connection or two shared connections 
+3. 
+A comparison of the relative merits of paying the “one off” charges up front, or spreading them over 
+15 or 40 years 
+Transmission charges are quite complex, and I gave him a memo to review and a comparison table prepared 
+by Blake Clough.  He studied these quite autonomously and with a few check-ins with me he prepared an 
+excel file for items 1 and 2.  His understanding of the charges was pretty good.  He picked up some items I 
+had not picked up, but also missed a few items which I was aware of and pointed out to him.  The 
+presentation of the information in the excel was not as clear as I would have liked – I had asked for it to be 
+easily followable by a reader new to the subject. 
+In general, he understood the tasks well and asked questions if he did not understand.  However sometimes 
+it turned out he did not seem to have understood it that well after all. 
+He understood and worked autonomously well, keeping me updated on progress.  Given he did not have 
+much excel experience before Gresham, he seems to have picked this up well.  Going forward, he would 
+benefit from improving presentation within Excel, i.e. grouping the inputs and the outputs together, with tidy 
+labelled workings on other sheets.  
+ 
+Tom 
+During his time at Gresham House Sam helped with a variety of tasks in the Data Science team, this 
+culminated in the production of a PowerBI dashboard displaying market data for wholesale electricity and 
+ancillary services procured by National Grid, and a technical paper that describes the relation between a 
+number of variables and the State of Health of grid scale battery systems under Gresham House’s 
+ownership. 
+Sam quickly picked up the intricacies of the mechanisms used to extract and process data, the back end of 
+his project producing a PowerBI dashboard was completed largely unaided despite not having experience in 
+this area and contained a sophisticated pipeline that extracted, formatted, and pushed data to PowerBI  
+using Microsoft Azure, the final deliverable was automated from start to finish. Sam also picked up the data 
+processing portion of the State of Health project very quickly, which involved navigating through a large and 
+confusing API.   
+Areas where Sam could improve are largely confined to the scientific area of his work. Defining short term 
+goals and learning about executing scientific methodologies will help significantly in this area as Sam can get 
+distracted by other ideas that aren’t directly related to the problem. In addition, improvement can be made 
+with an increased attention to detail by being hyper-critical of all aspects of his work, in particular with work 
+ 
+ 
+ 
+ 
+2
+ 
+that is presented and Sam’s own knowledge of what is being presented.  
+ 
+Annelies 
+ 
+Good work ethic - not afraid to take on tasks  
+ 
+Good with following up tasks - eg writing formal report on task that was been given 
+ 
+Eager to learn  
+As discussed with Sam this week - constructive feedback for future endeavours:  
+ 
+eg with Rent review - make sure that he always keeps reference of where the information is coming 
+from (links, screen shots, ...) in case questions are asked afterwards or other stakeholders have 
+different outcomes. Then it will be easier to have a constructive discussion afterwards.  
+ 
+Don't be afraid to ask questions and question why tasks are given  
+ 
+Question yourself what the ultimate outcome of the task is and how can you get the best results  
+Overall, seen a lot of growth in the past 12 weeks and deemed a successful internship 
+ 
+Harry 
+It has been great having Sam work in the team for the last 12 weeks. Life at Gresham can be fast paced and 
+require in depth industry knowledge so for a new joiner to both asset management and the BESS market this 
+can be a daunting prospect. Sam has readily embraced the challenges he has been presented with and has 
+always sought to learn and grow throughout. I’ve been impressed by his constant optimism and resilience. 
+Sam is very keen to ask questions to seek to understand how he can improve. However, I would advise that 
+before asking questions, take a step back and understand what it is that he is trying to get help on and how 
+to convey the request concisely to whom he is talking with. If the other person’s response isn’t clear or the 
+message is misunderstood, seek clarity before continuing to avoid further miscommunication. A way to 
+improve this is to always keep in mind what the purpose of a piece of work is and then organise tasks and 
+questions to achieve that efficiently. 
+Sam has an excellent ability to self-teach and I’ve been very impressed in how he has taught himself both 
+PowerBI and how to use macros in Excel in such a short space of time. Self-sufficiency is a key attribute to 
+success in any career. I would add here that sometimes learning independently is not the most efficient use 
+of time. I’d encourage Sam before starting on a task where he knows he has skill gaps to assess whether 
+there are other people in the team that could help to fill those skill gaps or suggest a better route to solve a 
+problem. This will ultimately help Sam to learn quicker from those around him. 
+Sam completed a project analysing degradation of batteries over the course of his internship. The final report 
+produced was of a high quality and had useful outcomes. Of particular interest was the work on cycle rates 
+and how this affected battery degradation. Sam performed useful work to show how, despite the increased 
+cost of the additional degradation, going from 1 cycle a day to 2 cycles resulted in a profit for the battery as 
+the additional revenue achieved from the extra cycle more than compensated the lost capacity. I’d 
+encourage Sam when conducting any scientific research to spend time at the start of the project fully 
+understanding the assignment and the data he is using rather than diving straight into getting results. Being 
+ 
+ 
+ 
+ 
+3
+ 
+more analytical and questioning early on will steer a project in a better direction from the outset and improve 
+the end quality of his research. With this project it would have meant that the state of charge metrics could 
+have been dropped earlier on giving more time to perform analysis on the cycling data.  
+Overall, I’ve been really pleased with Sam’s progress over the last 12 weeks. He has worked hard to improve 
+throughout and this tenacity to learn will serve him well going forward.  
+ 
+James 
+Thank you for all your hard work over the past 12 weeks. You have shown good growth, taking time to 
+understand the industry and our portfolio and the technical details of our assets.  
+The output you presented this week showing SOH impact against cycling over a 30-day period was a great 
+example of delivering against a brief as you clearly answered the question of does level of cycling impact 
+state of health in a battery. Sometimes you strayed a little further from the task and as a result at times were 
+not able to fully answer the question set, a suggestion would be to keep reviewing what the question you are 
+working on is and does the work you are currently doing help to answer that. This should help keep you 
+guided in your work and avoid unnecessary deviations. All that being said I enjoyed your creative thinking 
+and exploration of the questions set, efficiency of delivering work and precision of answers will no doubt 
+come with more experience so keep up the good work ethic! 

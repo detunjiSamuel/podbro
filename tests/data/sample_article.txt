@@ -1,0 +1,56 @@
+Author: ['Quant Girl'] 
+
+ Title: Advent Calendar 2024 Day 3: Galton-Watson 
+
+ This year, I will use the countdown to Christmas 🎄 to review some stochastic processes
+
+Day 3: Galton-Watson Branching Process
+
+The Galton-Watson branching process (or simply Galton-Watson process) is the simplest possible model for a population evolving in time. It is based on the assumption that individuals in the population give birth to a number of children independently of each other and all with the same distribution.
+
+
+
+
+
+Definition
+
+A Galton–Watson process is a stochastic process $\{X_n\}$ which evolves according to the recurrence formula $X_0 = 1$ and
+
+$$X_{n+1} = \sum_{j=1}^{X_n} Z_j^{n},$$
+
+where $\{Z_j^{(n)}. : n, j \in \mathbb{N}\}$ is a set of independent and identically-distributed natural number-valued random variables.
+
+
+
+
+
+🔔 Random Facts 🔔
+
+In the nineteenth century, there was concern amongst the Victorians that aristocratic surnames were becoming extinct. In 1873, British polymath Francis Galton originally posed the question regarding the probability of such an event in an issue of “The Educational Times” British mathematician H. W. Watson later replied with a solution. Together, they then wrote a paper in 1874 entitled “On the probability of the extinction of families” in the Journal of the Anthropological Institute of Great Britain and Ireland (now the Journal of the Royal Anthropological Institute). In the late 1930s, Leo Szilard independently reinvented Galton-Watson processes to describe the behavior of free neutrons during nuclear fission. This work involved generalizing formulas for extinction probabilities, which became essential for calculating the critical mass required for a continuous chain reaction with fissionable materials.
+
+Suppose that $\mu = E(Z_i) ∈(0,+∞)$. Then: Subcritical case (µ<1), on average, each individual produces fewer than one offspring. Over time, the population tends to shrink. In this case, extinction is almost certain, even if some individuals initially have many offspring. The decline happens because the average reproduction rate is insufficient to sustain or grow the population. Critical case (µ= 1), each individual produces, on average, exactly one offspring. The population neither grows nor shrinks on average but fluctuates due to randomness. In this case, extinction is inevitable over time, although it happens more slowly than in the subcritical case. Random fluctuations will eventually reduce the population to zero. Supercritical case (µ>1), Each individual produces more than one offspring on average, leading to potential exponential growth in the population. In this case, while there’s still a chance of extinction, it’s not guaranteed. If the population avoids early extinction, it will likely grow exponentially
+
+The Galton-Watson process marked the birth of branching processes, a key concept in probability theory. Branching processes are now foundational tools for modeling phenomena like the spread of diseases or the replication of computer algorithms.
+
+Applications of the Galton-Watson process in Evolutionary Genetics date at least back to the 1920’s in a work by Haldane on the survival of mutant genes.
+
+More recently, the Galton-Watson processes has been used to study the concept of a mitochondrial Eve—the most recent common female ancestor of all humans through maternal lines.
+
+More to Read
+
+P.s. If you are curious about probability distributions visit the Advent Calendar 2023 ✨
+
+Share this: Tweet
+
+
+
+
+
+More
+
+Reddit
+
+WhatsApp
+
+Email
+
