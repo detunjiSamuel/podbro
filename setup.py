@@ -26,18 +26,7 @@ setup(
         "Programming Language :: Python :: 3.11",
     ],
     python_requires=">=3.8",
-    install_requires=[
-        "typer",
-        "openai",
-        "yt-dlp",
-        "pydub",
-        "edge-tts",
-        "newspaper3k",
-        "beautifulsoup4",
-        "pymupdf",
-        "youtube-transcript-api",
-        "requests",
-    ],
+    install_requires=[req for req in open("requirements.txt").read().splitlines() if not req.startswith("#")],
     entry_points={
         "console_scripts": [
             "podbro=podbro.main:app",
