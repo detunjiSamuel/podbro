@@ -16,7 +16,9 @@ import uuid
 # Do not run this class directly
 class TestSpeechBase(TestCase):
     def setUp(self):
-        with (open('./data/sample_transcript.txt', "r")) as file:
+
+        transcript_path  = os.path.join(os.path.dirname(__file__), 'data', 'sample_transcript.txt')
+        with (open( transcript_path, "r")) as file:
             self.content = file.read()
         self.transcript_arr = parse_transcript(self.content)
         self.files_generated = []
@@ -72,7 +74,8 @@ class TestOpenAISpeech(TestSpeechBase):
 class TestTTSGeneralMethods(TestCase):
 
     def setUp(self):
-        self.test_dir = "./data_test"
+
+        self.test_dir = os.path.join(os.path.dirname(__file__), 'data')
 
         os.makedirs(self.test_dir, exist_ok=True)
 
@@ -104,7 +107,7 @@ class TestTTSGeneralMethods(TestCase):
             merge_audio_files([], self.output_file)
 
         """Test merging when a file does not exist."""
-        nonexistent_file = "./data/nonexistent.wav"
+        nonexistent_file = os.path.join(os.path.dirname(__file__), 'data', 'nonexistent.wav')
         with self.assertRaises(FileNotFoundError):
             merge_audio_files([nonexistent_file], self.output_file)
 
