@@ -1,4 +1,5 @@
 from unittest import TestCase, mock
+import unittest
 
 from podbro.tts.base import merge_audio_files
 from podbro.tts.openai import OpenAISpeech
@@ -15,6 +16,13 @@ import uuid
 
 # Do not run this class directly
 class TestSpeechBase(TestCase):
+    @classmethod
+    def setUpClass(cls):
+        # Skip tests in the base class
+        if cls is TestSpeechBase:
+            raise unittest.SkipTest("Skip TestSpeechBase tests, it's a base class")
+        super().setUpClass()
+
     def setUp(self):
 
         transcript_path  = os.path.join(os.path.dirname(__file__), 'data', 'sample_transcript.txt')
