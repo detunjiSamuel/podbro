@@ -24,14 +24,21 @@ class TestMedia(TestCase):
             if os.path.exists(audio):
                 os.remove(audio)
 
-    def test_download_video_file(self):
-        url = "https://www.youtube.com/watch?v=I4dbALnlezA"
-        download_video_file(url)
-        self.assertTrue(os.path.exists(
-            "Trump Named Time's Person of the Year & NJ Drones Incite Conspiracy Theories ｜ The Daily Show [I4dbALnlezA].webm"))
+    @mock.patch('yt_dlp.YoutubeDL')
+    def test_download_video_file(self , mock_youtube_dl):
 
-        self.files_generated.append(
-            "Trump Named Time's Person of the Year & NJ Drones Incite Conspiracy Theories ｜ The Daily Show [I4dbALnlezA].webm")
+        mock_info = {
+            'requested_downloads': [{'filepath': 'test_video.webm'}]
+        }
+
+        mock_youtube_dl.return_value.__enter__.return_value.extract_info.return_value = mock_info
+        mock_youtube_dl.return_value.__enter__.return_value.sanitize_info.return_value = mock_info
+
+        url = "https://www.youtube.com/watch?v=I4dbALnlezA"
+        result = download_video_file(url)
+
+        self.assertEqual(result, 'test_video.webm')
+
 
     def test_video_to_audio(self):
 

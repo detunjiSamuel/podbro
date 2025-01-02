@@ -72,6 +72,7 @@ class TestEdgeSpeech(TestSpeechBase):
             edge_speech.generate_audio_content([("Speaker1", "Test")])
 
 
+
 class TestOpenAISpeech(TestSpeechBase):
 
     def setUp(self):
