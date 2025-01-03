@@ -1,6 +1,71 @@
 from openai import OpenAI
+from enum import Enum
 
-from podbro.prompts.base import GEN_POD_SYSTEM_PROMPT
+from abc import ABC, abstractmethod
+
+
+
+
+class ModelProvider(str, Enum):
+    """Supported model providers"""
+    OPENAI = "openai"
+    CLAUDE = "claude"
+    LLAMA = "llama"
+
+
+class GeneratorBase(ABC):
+    """Abstract base class for all generator implementations"""
+
+    @abstractmethod
+    def generate_podcast_transcript(self, content):
+        """Generate podcast transcript from content
+
+        Args:
+            content (str): Input content to generate podcast from
+
+        Returns:
+            str: Generated podcast transcript
+        """
+        pass
+
+
+def get_generator(provider: ModelProvider, **kwargs):
+    """Factory function to get appropriate generator implementation
+
+    Args:
+        provider (ModelProvider): The model provider to use
+        **kwargs: Additional arguments passed to the generator constructor
+
+    Returns:
+        GeneratorBase: Instance of the appropriate generator class
+    """
+    if provider == ModelProvider.OPENAI:
+        from podbro.generator.openai import OpenAIGenerator
+        return OpenAIGenerator(**kwargs)
+    elif provider == ModelProvider.CLAUDE:
+        from podbro.generator.claude import ClaudeGenerator
+        return ClaudeGenerator(**kwargs)
+    elif provider == ModelProvider.LLAMA:
+        from podbro.generator.llama import LlamaGenerator
+        return LlamaGenerator(**kwargs)
+    else:
+        raise ValueError(f"Unsupported model provider: {provider}")
+
+
+def generate_podcast_transcript(content, provider=ModelProvider.OPENAI, **kwargs):
+    """Helper function to generate transcript using specified provider
+
+    Args:
+        content (str): Input content to generate from
+        provider (ModelProvider): Model provider to use
+        **kwargs: Additional arguments for the generator
+
+    Returns:
+        str: Generated podcast transcript
+    """
+    generator = get_generator(provider, **kwargs)
+    return generator.generate_podcast_transcript(content)
+
 
 
 def parse_transcript(content):
@@ -26,27 +91,3 @@ def parse_transcript(content):
             curr_speaker = line[:index]
             curr_text = line[index + 1:]
     return transcript_arr
-
-
-def generate_podcast_transcript(content):
-    """
-    Generates a podcast bland transcript version from the text extracted
-
-
-    :return:
-    """
-
-    messages = [
-        {"role": "system", "content": GEN_POD_SYSTEM_PROMPT},
-        {"role": "user", "content": content},
-    ]
-
-    client = OpenAI(
-    )
-
-    chat_completion = client.chat.completions.create(
-        messages=messages,
-        model="gpt-4o",
-    )
-
-    return chat_completion.choices[0].message.content
