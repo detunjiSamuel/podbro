@@ -34,11 +34,11 @@ jobs:
         pip install pytest pytest-cov
         pip install -e .
     
-    # - name: Run tests
-    #   env:
-    #     OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
-    #   run: |
-    #     pytest tests/ --cov=podbro --cov-report=xml
+    - name: Run tests
+      env:
+        OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+      run: |
+        pytest tests/ --cov=podbro --cov-report=xml
 
   publish:
     needs: test
